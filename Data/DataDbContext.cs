@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using App.Models;
+using App.Areas.HoSoHS.Models;
 
 namespace App.Data
 {
@@ -33,6 +34,9 @@ namespace App.Data
                 }
             }
         } 
+
+        public DbSet<LopHoc> LopHocs { get; set; }
+        public DbSet<HoSoHS> HoSoHs { get; set; }
 
     }
 }
