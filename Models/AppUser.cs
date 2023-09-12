@@ -18,7 +18,7 @@ namespace App.Models
         public int SDT { get; set; }
 
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
-        [Display(Name = "Nhập mật Tên Học Sinh")]
+        [Display(Name = "Nhập Tên Học Sinh")]
         public string Gender { get; set; }
     }
 }

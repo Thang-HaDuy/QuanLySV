@@ -31,7 +31,8 @@ namespace App.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,11 +47,12 @@ namespace App.Migrations
                     LopHocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NgayNhapHoc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DiemTongKet = table.Column<float>(type: "real", nullable: true)
+                    DiemTongKet = table.Column<float>(type: "real", nullable: true),
+                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HoSoHs", x => x.Id);
+                    table.PrimaryKey("PK_HoSoHs", x => new { x.Id, x.UserId, x.LopHocId });
                     table.ForeignKey(
                         name: "FK_HoSoHs_LopHocs_LopHocId",
                         column: x => x.LopHocId,
@@ -71,9 +73,21 @@ namespace App.Migrations
                 column: "LopHocId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HoSoHs_Slug",
+                table: "HoSoHs",
+                column: "Slug",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HoSoHs_UserId",
                 table: "HoSoHs",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LopHocs_Slug",
+                table: "LopHocs",
+                column: "Slug",
+                unique: true);
         }
 
         /// <inheritdoc />

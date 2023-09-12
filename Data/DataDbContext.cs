@@ -33,6 +33,15 @@ namespace App.Data
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
+
+            modelBuilder.Entity<HoSoHS>(entity => {
+                entity.HasKey( h => new { h.Id, h.UserId, h.LopHocId});
+                entity.HasIndex( h => h.Slug).IsUnique();
+            });
+
+            modelBuilder.Entity<LopHoc>( entity => {
+                entity.HasIndex( l => l.Slug).IsUnique();
+            });
         } 
 
         public DbSet<LopHoc> LopHocs { get; set; }

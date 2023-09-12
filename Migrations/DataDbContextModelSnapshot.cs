@@ -25,25 +25,31 @@ namespace App.Migrations
             modelBuilder.Entity("App.Areas.HoSoHS.Models.HoSoHS", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("LopHocId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<float?>("DiemTongKet")
                         .HasColumnType("real");
 
-                    b.Property<Guid>("LopHocId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("NgayNhapHoc")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id", "UserId", "LopHocId");
 
                     b.HasIndex("LopHocId");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -56,12 +62,20 @@ namespace App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("LopHocs");
                 });
