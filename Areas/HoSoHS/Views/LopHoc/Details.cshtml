@@ -1,7 +1,7 @@
 @model App.Areas.HoSoHS.Models.LopHoc
 
 @{
-    ViewData["Title"] = "Tri Tiết Lớp";
+    ViewData["Title"] = "Chi Tiết Lớp";
 }
 
 <partial name="_StatusMessage" />
@@ -27,14 +27,25 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Slug)
         </dd>
-        <div>
-            <dt class = "col-sm-10 p-6">Hoc Sinh Của Lớp</dt>
-            <div class="fixed-size col-sm-12">
+        <dt class = "col-sm-2">Sinh Viên</dt>
+        <table class="table fixed-size">
+            <thead>
+                <tr>
+                <th scope="col">name</th>
+                <th scope="col">email</th>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (var HocSinhs in Model.HoSoHS) {
-                    <div>@HocSinhs.HocSinh.UserName @HocSinhs.HocSinh.Email</div>
-            }
-            </div>
-        </div>
+                    <tr>
+                        <td>
+                            <a class="col-sm-5" asp-controller="HocSinh" asp-action="Details" asp-route-id="@HocSinhs.HocSinh.Id">@HocSinhs.HocSinh.UserName</a>
+                        </td>
+                        <td>@HocSinhs.HocSinh.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </dl>
 </div>
 <div>

@@ -139,8 +139,6 @@ namespace App.Areas.HoSoHS.Controllers
             {
                 return NotFound();
             }
-            ViewData["HocSinhId"] = new SelectList(_context.Users, "Id", "Id", hoSoHS.HocSinhId);
-            ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hoSoHS.LopHocId);
             return View(hoSoHS);
         }
 
@@ -176,8 +174,6 @@ namespace App.Areas.HoSoHS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["HocSinhId"] = new SelectList(_context.Users, "Id", "Id", hoSoHS.HocSinhId);
-            ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hoSoHS.LopHocId);
             return View(hoSoHS);
         }
 

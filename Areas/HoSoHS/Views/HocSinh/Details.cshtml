@@ -27,6 +27,37 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.SDT)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Gender)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HomeAdress)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HomeAdress)
+        </dd>
+        <dt class = "col-sm-2">Sinh Viên</dt>
+        <table class="table fixed-size">
+            <thead>
+                <tr>
+                <th scope="col">name</th>
+                <th scope="col">Sĩ Số</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var LopHocs in Model.HoSoHS) {
+                    <tr>
+                        <td>
+                            <a class="col-sm-5" asp-controller="LopHoc" asp-action="Details" asp-route-id="@LopHocs.LopHocId">@LopHocs.LopHoc.name</a>
+                        </td>
+                        <td>@LopHocs.LopHoc.HocSinhCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </dl>
 </div>
 <div>

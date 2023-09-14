@@ -13,7 +13,7 @@ namespace App.Areas.HoSoHS.Controllers
 {
     [Authorize]
     [Area("HoSoHS")]
-    [Route("/[controller]/[action]/{id?}")]
+    [Route("/HocSinh/[action]/{id?}")]
     public class HocSinhController : Controller
     {
         private readonly DataDbContext _context;
@@ -24,23 +24,52 @@ namespace App.Areas.HoSoHS.Controllers
         }
 
         // GET: HoSoHS/HocSinh
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
         {
-              return _context.Users != null ? 
-                          View(await _context.Users.Where(u => u.HoSoHS.Any()).ToListAsync()) :
-                          Problem("Entity set 'DataDbContext.Users'  is null.");
+            var hocSinh = _context.Users.Where(u => u.HoSoHS.Any());
+
+            int totalLopHoc = await hocSinh.CountAsync();  
+            if (pagesize <=0) pagesize = 5;
+            int countPages = (int)Math.Ceiling((double)totalLopHoc / pagesize);
+ 
+ 
+            if (currentPage > countPages) currentPage = countPages;     
+            if (currentPage < 1) currentPage = 1; 
+
+            var pagingModel = new PagingModel()
+            {
+                countpages = countPages,
+                currentpage = currentPage,
+                generateUrl = (pageNumber) => Url.Action("Index", new {
+                    p =  pageNumber,
+                    size = pagesize
+                })
+            };
+
+            ViewBag.pagingModel = pagingModel;
+            ViewBag.totalLopHoc = totalLopHoc;
+
+            ViewBag.postIndex = (currentPage - 1) * pagesize;
+
+            var lopHocInPage = await hocSinh.Skip((currentPage - 1) * pagesize)
+                             .Take(pagesize)
+                             .ToListAsync();   
+                        
+            return View(lopHocInPage);
         }
 
         // GET: HoSoHS/HocSinh/Details/5
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null || _context.Users == null)
+            var HocSinh = _context.Users
+                            .Include(u => u.HoSoHS)
+                            .ThenInclude(h => h.LopHoc);
+            if (id == null || HocSinh == null)
             {
                 return NotFound();
             }
 
-            var appUser = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appUser = await HocSinh.FirstOrDefaultAsync(m => m.Id == id);
             if (appUser == null)
             {
                 return NotFound();
@@ -49,27 +78,6 @@ namespace App.Areas.HoSoHS.Controllers
             return View(appUser);
         }
 
-        // GET: HoSoHS/HocSinh/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: HoSoHS/HocSinh/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HomeAdress,BirthDate,SDT,Gender,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] AppUser appUser)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(appUser);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(appUser);
-        }
 
         // GET: HoSoHS/HocSinh/Edit/5
         public async Task<IActionResult> Edit(string id)
@@ -92,7 +100,7 @@ namespace App.Areas.HoSoHS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("HomeAdress,BirthDate,SDT,Gender,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, [Bind("SDT,Gender,Id,UserName,Email")] AppUser appUser)
         {
             if (id != appUser.Id)
             {
@@ -122,42 +130,6 @@ namespace App.Areas.HoSoHS.Controllers
             return View(appUser);
         }
 
-        // GET: HoSoHS/HocSinh/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Users == null)
-            {
-                return NotFound();
-            }
-
-            var appUser = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (appUser == null)
-            {
-                return NotFound();
-            }
-
-            return View(appUser);
-        }
-
-        // POST: HoSoHS/HocSinh/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'DataDbContext.Users'  is null.");
-            }
-            var appUser = await _context.Users.FindAsync(id);
-            if (appUser != null)
-            {
-                _context.Users.Remove(appUser);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool AppUserExists(string id)
         {
