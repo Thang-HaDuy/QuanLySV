@@ -1,24 +1,26 @@
-@model IEnumerable<App.Areas.HoSoHS.Models.LopHoc>
+@model IEnumerable<App.Areas.HoSoHS.Models.HoSoHS>
 
 @{
-    ViewData["Title"] = "Danh Sách Lớp";
+    ViewData["Title"] = "Danh Sách Hồ Sơ";
 }
+
 
 <partial name="_StatusMessage" />
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<p>Tổng số lớp học: @ViewBag.totalLopHoc</p>
 <table class="table">
     <thead>
         <tr>
             <th>STT</th>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.LopHoc)
             </th>
-            <th>Sĩ Số </th>
             <th>
-                @Html.DisplayNameFor(model => model.Slug)
+                @Html.DisplayNameFor(model => model.HocSinh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NgayNhapHoc)
             </th>
             <th></th>
         </tr>
@@ -27,18 +29,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @(++ViewBag.postIndex)
+                <a asp-action="Details" asp-route-id="@item.Id">@(++ViewBag.postIndex)</a>
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.name)
-                </a>
+                @Html.DisplayFor(modelItem => item.LopHoc.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HocSinhCount)
+                @Html.DisplayFor(modelItem => item.HocSinh.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Slug)
+                @Html.DisplayFor(modelItem => item.NgayNhapHoc)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -50,12 +50,8 @@
 </table>
 
 <partial name="_PagingXTL" model="@ViewBag.pagingModel" />
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-
 @{
-    _AdminSidebarService.SetActive("LopHoc", "Index", "HoSoHS");
+    _AdminSidebarService.SetActive("HoSoHS", "Index", "HoSoHS");
 }
 @section Sidebar
 {

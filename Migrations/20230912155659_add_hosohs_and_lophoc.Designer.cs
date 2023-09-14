@@ -4,6 +4,7 @@ using App.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    partial class DataDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230912155659_add_hosohs_and_lophoc")]
+    partial class add_hosohs_and_lophoc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,7 +30,7 @@ namespace App.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("HocSinhId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("LopHocId")
@@ -43,15 +46,15 @@ namespace App.Migrations
                         .HasMaxLength(160)
                         .HasColumnType("nvarchar(160)");
 
-                    b.HasKey("Id", "HocSinhId", "LopHocId");
-
-                    b.HasIndex("HocSinhId");
+                    b.HasKey("Id", "UserId", "LopHocId");
 
                     b.HasIndex("LopHocId");
 
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasFilter("[Slug] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("HoSoHS");
                 });
@@ -294,19 +297,19 @@ namespace App.Migrations
 
             modelBuilder.Entity("App.Areas.HoSoHS.Models.HoSoHS", b =>
                 {
-                    b.HasOne("App.Models.AppUser", "HocSinh")
-                        .WithMany("HoSoHS")
-                        .HasForeignKey("HocSinhId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("App.Areas.HoSoHS.Models.LopHoc", "LopHoc")
-                        .WithMany("HoSoHS")
+                        .WithMany()
                         .HasForeignKey("LopHocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("HocSinh");
+                    b.HasOne("App.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
 
                     b.Navigation("LopHoc");
                 });
@@ -360,16 +363,6 @@ namespace App.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("App.Areas.HoSoHS.Models.LopHoc", b =>
-                {
-                    b.Navigation("HoSoHS");
-                });
-
-            modelBuilder.Entity("App.Models.AppUser", b =>
-                {
-                    b.Navigation("HoSoHS");
                 });
 #pragma warning restore 612, 618
         }

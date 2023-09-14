@@ -34,7 +34,7 @@ namespace App.Menu
             Items.Add(new SideBarItem() { 
                 Type = SideBarItemType.NavItem,
                 Title = "Quản lý Role",
-                AwesomeIcon = "far fa-folder",
+                AwesomeIcon = "fas fa-folder",
                 Controller = "Role",
                 Action = "Index", 
                 Area = "Identity",
@@ -47,6 +47,37 @@ namespace App.Menu
                 Controller = "DbManage",
                 Action = "Index", 
                 Area = "",
+            });
+
+             Items.Add(new SideBarItem() { 
+                Type = SideBarItemType.NavItem,
+                Title = "Quản lý Hồ Sơ",
+                AwesomeIcon = "fas fa-file-archive",
+                collapseID = "HoSoHS",
+                Items = new List<SideBarItem>() {
+                    new SideBarItem() { 
+                        Type = SideBarItemType.NavItem,
+                        Controller = "LopHoc",
+                        Action = "Index", 
+                        Area = "HoSoHS",
+                        Title = "Các Lớp Học"                        
+                    },
+                    new SideBarItem() { 
+                        Type = SideBarItemType.NavItem,
+                        Controller = "HocSinh",
+                        Action = "Index", 
+                        Area = "HoSoHS",
+                        Title = "Các Học Sinh"                        
+                    }, 
+                    new SideBarItem() { 
+                        Type = SideBarItemType.NavItem,
+                        Controller = "HoSoHS",
+                        Action = "Index", 
+                        Area = "HoSoHS",
+                        Title = "Các Hồ Sơ"                        
+                    },                                                            
+                }
+
             });
         }
 

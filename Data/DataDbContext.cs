@@ -35,7 +35,7 @@ namespace App.Data
             }
 
             modelBuilder.Entity<HoSoHS>(entity => {
-                entity.HasKey( h => new { h.Id, h.UserId, h.LopHocId});
+                entity.HasKey( h => new { h.Id, h.HocSinhId, h.LopHocId});
                 entity.HasIndex( h => h.Slug).IsUnique();
             });
 

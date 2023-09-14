@@ -16,15 +16,13 @@ namespace App.Migrations
                 table: "Users",
                 type: "nvarchar(50)",
                 maxLength: 50,
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "SDT",
                 table: "Users",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "LopHocs",
@@ -32,7 +30,7 @@ namespace App.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Slug = table.Column<string>(type: "nvarchar(160)", maxLength: 160, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,7 +38,7 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HoSoHs",
+                name: "HoSoHS",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -48,19 +46,19 @@ namespace App.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     NgayNhapHoc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DiemTongKet = table.Column<float>(type: "real", nullable: true),
-                    Slug = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Slug = table.Column<string>(type: "nvarchar(160)", maxLength: 160, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HoSoHs", x => new { x.Id, x.UserId, x.LopHocId });
+                    table.PrimaryKey("PK_HoSoHS", x => new { x.Id, x.UserId, x.LopHocId });
                     table.ForeignKey(
-                        name: "FK_HoSoHs_LopHocs_LopHocId",
+                        name: "FK_HoSoHS_LopHocs_LopHocId",
                         column: x => x.LopHocId,
                         principalTable: "LopHocs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_HoSoHs_Users_UserId",
+                        name: "FK_HoSoHS_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -68,33 +66,35 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_HoSoHs_LopHocId",
-                table: "HoSoHs",
+                name: "IX_HoSoHS_LopHocId",
+                table: "HoSoHS",
                 column: "LopHocId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HoSoHs_Slug",
-                table: "HoSoHs",
+                name: "IX_HoSoHS_Slug",
+                table: "HoSoHS",
                 column: "Slug",
-                unique: true);
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HoSoHs_UserId",
-                table: "HoSoHs",
+                name: "IX_HoSoHS_UserId",
+                table: "HoSoHS",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LopHocs_Slug",
                 table: "LopHocs",
                 column: "Slug",
-                unique: true);
+                unique: true,
+                filter: "[Slug] IS NOT NULL");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "HoSoHs");
+                name: "HoSoHS");
 
             migrationBuilder.DropTable(
                 name: "LopHocs");

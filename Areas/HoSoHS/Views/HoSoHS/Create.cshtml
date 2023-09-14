@@ -1,21 +1,25 @@
-@model App.Areas.HoSoHS.Models.LopHoc
+@model App.Areas.HoSoHS.Models.HoSoHS
 
 @{
-    ViewData["Title"] = "Tạo Lớp Mới";
+    ViewData["Title"] = "Tạo Hồ Sơ Mới";
 }
 
 
 <partial name="_StatusMessage" />
-<h4>LopHoc</h4>
+
+<h4>HoSoHS</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
+                <label asp-for="LopHocId" class="control-label"></label>
+                <select asp-for="LopHocId" class ="form-control" asp-items="ViewBag.LopHocId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="HocSinhId" class="control-label"></label>
+                <select asp-for="HocSinhId" class ="form-control" asp-items="ViewBag.HocSinhId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Slug" class="control-label"></label>
@@ -33,15 +37,13 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 @{
-    _AdminSidebarService.SetActive("LopHoc", "Index", "HoSoHS");
+    _AdminSidebarService.SetActive("HoSoHS", "Index", "HoSoHS");
 }
 @section Sidebar
 {
     @Html.Raw(_AdminSidebarService.RenderHtml())
 }
-

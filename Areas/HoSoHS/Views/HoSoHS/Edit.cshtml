@@ -1,22 +1,29 @@
-@model App.Areas.HoSoHS.Models.LopHoc
+@model App.Areas.HoSoHS.Models.HoSoHS
 
 @{
-    ViewData["Title"] = "Sửa Lớp";
+    ViewData["Title"] = "Sửa Hồ Sơ";
 }
 
 
 <partial name="_StatusMessage" />
-<h4>LopHoc</h4>
+<h4>HoSoHS</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="LopHocId" />
+            <input type="hidden" asp-for="HocSinhId" />
             <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger"></span>
+                <label asp-for="NgayNhapHoc" class="control-label"></label>
+                <input asp-for="NgayNhapHoc" class="form-control" />
+                <span asp-validation-for="NgayNhapHoc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiemTongKet" class="control-label"></label>
+                <input asp-for="DiemTongKet" class="form-control" />
+                <span asp-validation-for="DiemTongKet" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Slug" class="control-label"></label>
@@ -39,7 +46,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 @{
-    _AdminSidebarService.SetActive("LopHoc", "Index", "HoSoHS");
+    _AdminSidebarService.SetActive("HoSoHS", "Index", "HoSoHS");
 }
 @section Sidebar
 {

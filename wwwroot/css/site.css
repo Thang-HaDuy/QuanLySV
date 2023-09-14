@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.fixed-size {
+  max-height: 50vh; /* Giới hạn chiều cao tối đa là 50% chiều cao của màn hình */
+  overflow-y: auto; /* Cho phép vuốt nếu nội dung dài hơn kích thước cố định */
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  padding-top: 5px;
+}

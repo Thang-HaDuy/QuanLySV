@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    [Migration("20230912090545_add_hosohs_and_lophoc")]
-    partial class add_hosohs_and_lophoc
+    [Migration("20230914032007_rename_userid_AppUser_HocSinh")]
+    partial class rename_userid_AppUser_HocSinh
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,7 +30,7 @@ namespace App.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("HocSinhId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("LopHocId")
@@ -43,20 +43,20 @@ namespace App.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
 
-                    b.HasKey("Id", "UserId", "LopHocId");
+                    b.HasKey("Id", "HocSinhId", "LopHocId");
+
+                    b.HasIndex("HocSinhId");
 
                     b.HasIndex("LopHocId");
 
                     b.HasIndex("Slug")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Slug] IS NOT NULL");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HoSoHs");
+                    b.ToTable("HoSoHS");
                 });
 
             modelBuilder.Entity("App.Areas.HoSoHS.Models.LopHoc", b =>
@@ -66,9 +66,8 @@ namespace App.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(160)
+                        .HasColumnType("nvarchar(160)");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -78,7 +77,8 @@ namespace App.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Slug")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Slug] IS NOT NULL");
 
                     b.ToTable("LopHocs");
                 });
@@ -106,7 +106,6 @@ namespace App.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -137,7 +136,7 @@ namespace App.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("SDT")
+                    b.Property<int?>("SDT")
                         .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
@@ -298,19 +297,19 @@ namespace App.Migrations
 
             modelBuilder.Entity("App.Areas.HoSoHS.Models.HoSoHS", b =>
                 {
+                    b.HasOne("App.Models.AppUser", "HocSinh")
+                        .WithMany("HoSoHS")
+                        .HasForeignKey("HocSinhId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("App.Areas.HoSoHS.Models.LopHoc", "LopHoc")
-                        .WithMany()
+                        .WithMany("HoSoHS")
                         .HasForeignKey("LopHocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("App.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
+                    b.Navigation("HocSinh");
 
                     b.Navigation("LopHoc");
                 });
@@ -364,6 +363,16 @@ namespace App.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("App.Areas.HoSoHS.Models.LopHoc", b =>
+                {
+                    b.Navigation("HoSoHS");
+                });
+
+            modelBuilder.Entity("App.Models.AppUser", b =>
+                {
+                    b.Navigation("HoSoHS");
                 });
 #pragma warning restore 612, 618
         }

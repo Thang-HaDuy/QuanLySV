@@ -1,18 +1,10 @@
 @model App.Areas.HoSoHS.Models.LopHoc
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Tri Tiết Lớp";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-
+<partial name="_StatusMessage" />
 <div>
     <h4>LopHoc</h4>
     <hr />
@@ -24,16 +16,36 @@
             @Html.DisplayFor(model => model.name)
         </dd>
         <dt class = "col-sm-2">
+            Sĩ Số
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HocSinhCount)
+        </dd>
+        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Slug)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Slug)
         </dd>
+        <div>
+            <dt class = "col-sm-10 p-6">Hoc Sinh Của Lớp</dt>
+            <div class="fixed-size col-sm-12">
+                @foreach (var HocSinhs in Model.HoSoHS) {
+                    <div>@HocSinhs.HocSinh.UserName @HocSinhs.HocSinh.Email</div>
+            }
+            </div>
+        </div>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
-</body>
-</html>
+
+@{
+    _AdminSidebarService.SetActive("LopHoc", "Index", "HoSoHS");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
+}

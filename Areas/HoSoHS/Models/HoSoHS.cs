@@ -20,17 +20,16 @@ namespace App.Areas.HoSoHS.Models
         public LopHoc LopHoc {set; get;}  
 
         [Required]
-        public string UserId {set; get;}
+        public string HocSinhId {set; get;}
 
-        [ForeignKey("UserId")]
-        public AppUser AppUser {set; get;}  
+        [ForeignKey("HocSinhId")]
+        public AppUser HocSinh {set; get;}  
         public DateTime NgayNhapHoc {set; get;} 
         public float? DiemTongKet {set; get; }
 
-        [Required(ErrorMessage = "Phải tạo url")]
-        [StringLength(100, MinimumLength = 3, ErrorMessage = "{0} dài {1} đến {2}")]
+        [Display(Name="Chuỗi định danh (url)", Prompt = "Nhập hoặc để trống tự phát sinh")]
+        [StringLength(160, MinimumLength = 5, ErrorMessage = "{0} dài {1} đến {2}")]
         [RegularExpression(@"^[a-z0-9-]*$", ErrorMessage = "Chỉ dùng các ký tự [a-z0-9-]")]
-        [Display(Name = "Url hiện thị")]
-        public string Slug { set; get; }
+        public string? Slug {set; get;}
     }
 }
