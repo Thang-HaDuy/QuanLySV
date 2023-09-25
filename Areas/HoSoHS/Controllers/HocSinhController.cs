@@ -1,13 +1,15 @@
 using System;
-using System.Collections.Generic;
+using App.Data;
+using App.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using App.Data;
-using App.Models;
 using Microsoft.AspNetCore.Authorization;
+using App.Areas.HoSoHS.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace App.Areas.HoSoHS.Controllers
 {
@@ -17,10 +19,20 @@ namespace App.Areas.HoSoHS.Controllers
     public class HocSinhController : Controller
     {
         private readonly DataDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public HocSinhController(DataDbContext context)
+        public HocSinhController
+        (     
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            DataDbContext context
+        )
         {
             _context = context;
+            _signInManager = signInManager;
+            _userManager = userManager;
+
         }
 
         // GET: HoSoHS/HocSinh
@@ -100,19 +112,22 @@ namespace App.Areas.HoSoHS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("SDT,Gender,Id,UserName,Email")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, [Bind("SDT,Gender,Email")] AppUser appUser)
         {
-            if (id != appUser.Id)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
+            // if (ModelState.IsValid)
+            // {
                 try
                 {
-                    _context.Update(appUser);
-                    await _context.SaveChangesAsync();
+                    var users = await _context.Users.FindAsync(id);
+                    if (users != null)
+                    {
+                        users.SDT = appUser.SDT;
+                        users.Gender = appUser.Gender;
+                        users.Email = appUser.Email;                       
+                        await _userManager.UpdateAsync(users);
+                        await _signInManager.RefreshSignInAsync(users);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,7 +141,7 @@ namespace App.Areas.HoSoHS.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            // }
             return View(appUser);
         }
 

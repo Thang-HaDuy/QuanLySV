@@ -36,7 +36,7 @@ namespace App.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = RoleName.Administrator)]
+        // [Authorize(Roles = RoleName.Administrator)]
         public async Task<IActionResult> Migrate()
         {
             await _dbContext.Database.MigrateAsync();

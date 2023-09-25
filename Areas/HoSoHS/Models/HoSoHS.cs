@@ -24,7 +24,10 @@ namespace App.Areas.HoSoHS.Models
 
         [ForeignKey("HocSinhId")]
         public AppUser HocSinh {set; get;}  
-        public DateTime NgayNhapHoc {set; get;} 
+        public DateTime NgayNhapHoc {set; get;}  
+
+        [Display(Name = "Điểm Tổng Kết")]
+        [Range(1,10, ErrorMessage = "{0} dài {1} đến {2}")]
         public float? DiemTongKet {set; get; }
 
         [Display(Name="Chuỗi định danh (url)", Prompt = "Nhập hoặc để trống tự phát sinh")]

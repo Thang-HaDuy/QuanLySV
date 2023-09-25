@@ -26,6 +26,11 @@ namespace App.Models
         public ICollection<HoSoHS> HoSoHS { get; set; }
 
 
+        public AppUser()
+        {
+            HoSoHS = new List<HoSoHS>();
+        }
+
         public int LopHocCount
         {
             get { return HoSoHS.Count; }

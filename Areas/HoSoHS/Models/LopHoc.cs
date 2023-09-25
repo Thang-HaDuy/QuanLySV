@@ -21,10 +21,15 @@ namespace App.Areas.HoSoHS.Models
         public string? Slug {set; get;}
         public ICollection<HoSoHS> HoSoHS { get; set; }
 
+        public LopHoc()
+        {
+            HoSoHS = new List<HoSoHS>();
+        }
 
         public int HocSinhCount
         {
-            get { return HoSoHS.Count; }
+            get { return HoSoHS.Count;}
+            
         }
     }
 }

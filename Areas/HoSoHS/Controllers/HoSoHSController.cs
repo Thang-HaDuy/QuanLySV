@@ -102,7 +102,6 @@ namespace App.Areas.HoSoHS.Controllers
         public async Task<IActionResult> Create([Bind("LopHocId,HocSinhId,Slug")] Models.HoSoHS hoSoHS)
         {
             hoSoHS.NgayNhapHoc = DateTime.UtcNow;
-            hoSoHS.DiemTongKet = 10;
             if (hoSoHS.Slug == null)
             {
                 hoSoHS.Slug = AppUtilities.GenerateSlug(hoSoHS.HocSinhId);
@@ -114,15 +113,16 @@ namespace App.Areas.HoSoHS.Controllers
                 return View(hoSoHS);
             }
 
-            if (ModelState.IsValid)
-            {
+            // if (true)
+            // if (ModelState.IsValid)
+            // {
                 _context.Add(hoSoHS);
                 await _context.SaveChangesAsync();
                 StatusMessage = "Vừa tạo Hồ Sơ mới";
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["HocSinhId"] = new SelectList(_context.Users, "Id", "UserName", hoSoHS.HocSinhId);
-            ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hoSoHS.LopHocId);
+            // }
+            ViewData["HocSinhId"] = new SelectList(_context.Users, "Id", "UserName");
+            ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name");
             return View(hoSoHS);
         }
 
@@ -147,19 +147,25 @@ namespace App.Areas.HoSoHS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,LopHocId,HocSinhId,NgayNhapHoc,DiemTongKet,Slug")] Models.HoSoHS hoSoHS)
+        public async Task<IActionResult> Edit(Guid id, [Bind("NgayNhapHoc,DiemTongKet,Slug")] Models.HoSoHS hoSoHS)
         {
-            if (id != hoSoHS.Id)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
+            // if (ModelState.IsValid)
+            // {
                 try
                 {
-                    _context.Update(hoSoHS);
-                    await _context.SaveChangesAsync();
+                    var data = await _context.HoSoHs.FirstOrDefaultAsync(c => c.Id == id);
+                    if (data != null) {
+                        data.NgayNhapHoc = hoSoHS.NgayNhapHoc;
+                        data.Slug = hoSoHS.Slug;
+                        data.DiemTongKet = hoSoHS.DiemTongKet;
+                        _context.Update(data);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -173,7 +179,7 @@ namespace App.Areas.HoSoHS.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            // }
             return View(hoSoHS);
         }
 
@@ -206,7 +212,7 @@ namespace App.Areas.HoSoHS.Controllers
             {
                 return Problem("Entity set 'DataDbContext.HoSoHs'  is null.");
             }
-            var hoSoHS = await _context.HoSoHs.FindAsync(id);
+            var hoSoHS = await _context.HoSoHs.FirstOrDefaultAsync(c => c.Id == id);
             if (hoSoHS != null)
             {
                 _context.HoSoHs.Remove(hoSoHS);
