@@ -1,13 +1,10 @@
 @model App.Areas.HSHocSinh.Models.HocSinh
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm Học Sinh";
 }
 
-<h1>Create</h1>
-
-<h4>HocSinh</h4>
-<hr />
+<partial name="_StatusMessage" />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -54,4 +51,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@{
+    _AdminSidebarService.SetActive("HocSinh", "Index", "HSHocSinh");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
 }

@@ -30,7 +30,9 @@ namespace App.Areas.HSHocSinh.Controllers
         // GET: HoSoHS/LopHoc
         public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
         {
-            var lopHoc = _context.LopHocs;
+            var lopHoc = _context.LopHocs
+                        .Include(l => l.hocSinhs)
+                        .OrderBy(l => l.name);
 
             int totalLopHoc = await lopHoc.CountAsync();  
             if (pagesize <=0) pagesize = 5;
@@ -71,7 +73,9 @@ namespace App.Areas.HSHocSinh.Controllers
             {
                 return NotFound();
             }
-            var lopHoc = await LopHocs.FirstOrDefaultAsync(m => m.Id == id);
+            var lopHoc = await LopHocs
+                        .Include(l => l.hocSinhs)
+                        .FirstOrDefaultAsync(m => m.Id == id);
             if (lopHoc == null)
             {
                 return NotFound();

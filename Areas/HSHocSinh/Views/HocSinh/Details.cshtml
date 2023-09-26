@@ -1,14 +1,11 @@
 @model App.Areas.HSHocSinh.Models.HocSinh
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông Tin Học Sinh";
 }
 
-<h1>Details</h1>
-
+<partial name="_StatusMessage" />
 <div>
-    <h4>HocSinh</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.name)
@@ -44,7 +41,9 @@
             @Html.DisplayNameFor(model => model.LopHoc)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LopHoc.name)
+            <a asp-controller="LopHoc" asp-action="Details" asp-route-id="@Model?.LopHoc.Id">
+                @Html.DisplayFor(model => model.LopHoc.name)
+            </a>
         </dd>
     </dl>
 </div>
@@ -52,3 +51,12 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@{
+    _AdminSidebarService.SetActive("HocSinh", "Index", "HSHocSinh");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
+}

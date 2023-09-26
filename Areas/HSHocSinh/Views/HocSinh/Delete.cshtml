@@ -1,14 +1,14 @@
 @model App.Areas.HSHocSinh.Models.HocSinh
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xóa Học Sinh";
 }
 
-<h1>Delete</h1>
-
+<partial name="_StatusMessage" />
 <h3>Are you sure you want to delete this?</h3>
+<hr />
 <div>
-    <h4>HocSinh</h4>
+    <h4>@Html.DisplayNameFor(model => model.name)</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -55,3 +55,11 @@
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+
+@{
+    _AdminSidebarService.SetActive("HocSinh", "Index", "HSHocSinh");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
+}

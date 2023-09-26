@@ -1,25 +1,20 @@
 @model IEnumerable<App.Areas.HSHocSinh.Models.HocSinh>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh Sách Học Sinh";
 }
 
-<h1>Index</h1>
-
+<partial name="_StatusMessage" />
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<p>Tổng số học sinh: @ViewBag.totalHocSinh</p>
 <table class="table">
     <thead>
         <tr>
+            <th>STT</th>
             <th>
                 @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HomeAdress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BirthDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SDT)
@@ -37,13 +32,12 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @(++ViewBag.hocSinhIndex)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HomeAdress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BirthDate)
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.name)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SDT)
@@ -56,10 +50,17 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@{
+    _AdminSidebarService.SetActive("HocSinh", "Index", "HSHocSinh");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
+}

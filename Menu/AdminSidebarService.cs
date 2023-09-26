@@ -64,10 +64,10 @@ namespace App.Menu
                     },
                     new SideBarItem() { 
                         Type = SideBarItemType.NavItem,
-                        Controller = "HoSoHS",
+                        Controller = "HocSinh",
                         Action = "Index", 
                         Area = "HSHocSinh",
-                        Title = "Các Hồ Sơ"                        
+                        Title = "Các Hoc Sinh"                        
                     },                                                            
                 }
 

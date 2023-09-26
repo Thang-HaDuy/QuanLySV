@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App.Areas.HSHocSinh.Models;
 using App.Data;
+using Microsoft.AspNetCore.Authorization;
+using App.Models;
 
-namespace QuanLySV.Areas.HSHocSinh.Controllers
+namespace App.Areas.HSHocSinh.Controllers
 {
+    [Authorize]
     [Area("HSHocSinh")]
+    [Route("/[controller]/[action]/{id?}")]
     public class HocSinhController : Controller
     {
         private readonly DataDbContext _context;
@@ -20,11 +24,43 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
             _context = context;
         }
 
+        [TempData]
+        public string StatusMessage { get; set; }
         // GET: HSHocSinh/HocSinh
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
         {
-            var dataDbContext = _context.HocSinhs.Include(h => h.LopHoc);
-            return View(await dataDbContext.ToListAsync());
+            var hocSinh = _context.HocSinhs
+                        .OrderBy(h => h.name);
+
+            int totalHocSinh = await hocSinh.CountAsync();  
+            if (pagesize <= 0) pagesize = 5;
+            int countPages = (int)Math.Ceiling((double)totalHocSinh / pagesize);
+ 
+ 
+            if (currentPage > countPages) currentPage = countPages;     
+            if (currentPage < 1) currentPage = 1; 
+
+            var pagingModel = new PagingModel()
+            {
+                countpages = countPages,
+                currentpage = currentPage,
+                generateUrl = (pageNumber) => Url.Action("Index", new {
+                    p =  pageNumber,
+                    size = pagesize
+                })
+            };
+
+            ViewBag.pagingModel = pagingModel;
+            ViewBag.totalHocSinh = totalHocSinh;
+
+            ViewBag.hocSinhIndex = (currentPage - 1) * pagesize;
+
+            var hocSinhInPage = await hocSinh.Skip((currentPage - 1) * pagesize)
+                             .Include(h => h.LopHoc)
+                             .Take(pagesize)
+                             .ToListAsync();   
+                        
+            return View(hocSinhInPage);
         }
 
         // GET: HSHocSinh/HocSinh/Details/5
@@ -58,13 +94,13 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,name,HomeAdress,BirthDate,SDT,Gender,LopHocId")] HocSinh hocSinh)
+        public async Task<IActionResult> Create([Bind("name,HomeAdress,BirthDate,SDT,Gender,LopHocId")] HocSinh hocSinh)
         {
             if (ModelState.IsValid)
             {
-                hocSinh.Id = Guid.NewGuid();
                 _context.Add(hocSinh);
                 await _context.SaveChangesAsync();
+                StatusMessage = "Vừa tạo Lớp Học mới";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hocSinh.LopHocId);
@@ -95,30 +131,23 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,name,HomeAdress,BirthDate,SDT,Gender,LopHocId")] HocSinh hocSinh)
         {
-            if (id != hocSinh.Id)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
-                try
+                var user = await _context.HocSinhs.FindAsync(id);
+                if (user != null)
                 {
-                    _context.Update(hocSinh);
+                    user.name = hocSinh.name;
+                    user.HomeAdress = hocSinh.HomeAdress;
+                    user.BirthDate = hocSinh.BirthDate;
+                    user.SDT = hocSinh.SDT;
+                    user.Gender = hocSinh.Gender;
+                    user.LopHocId = hocSinh.LopHocId;
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HocSinhExists(hocSinh.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(hocSinh);
             }
             ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hocSinh.LopHocId);
             return View(hocSinh);
