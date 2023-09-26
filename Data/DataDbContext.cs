@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using App.Models;
-using App.Areas.HoSoHS.Models;
+using App.Areas.HSHocSinh.Models;
 
 namespace App.Data
 {
@@ -33,19 +33,10 @@ namespace App.Data
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
-
-            modelBuilder.Entity<HoSoHS>(entity => {
-                entity.HasKey( h => new { h.Id, h.HocSinhId, h.LopHocId});
-                entity.HasIndex( h => h.Slug).IsUnique();
-            });
-
-            modelBuilder.Entity<LopHoc>( entity => {
-                entity.HasIndex( l => l.Slug).IsUnique();
-            });
         } 
 
+        public DbSet<HocSinh> HocSinhs { get; set; }
         public DbSet<LopHoc> LopHocs { get; set; }
-        public DbSet<HoSoHS> HoSoHs { get; set; }
 
     }
 }

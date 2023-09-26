@@ -1,0 +1,57 @@
+@model IEnumerable<App.Areas.HSHocSinh.Models.LopHoc>
+
+@{
+    ViewData["Title"] = "Danh Sách Lớp";
+}
+
+<partial name="_StatusMessage" />
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<p>Tổng số lớp học: @ViewBag.totalLopHoc</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>Sĩ Số </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @(++ViewBag.lopHocIndex)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.name)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HocSinhCount)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<partial name="_PagingXTL" model="@ViewBag.pagingModel" />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@{
+    _AdminSidebarService.SetActive("LopHoc", "Index", "HSHocSinh");
+}
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.RenderHtml())
+}

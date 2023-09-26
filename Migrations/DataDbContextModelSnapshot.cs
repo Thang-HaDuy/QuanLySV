@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace App.Migrations
+namespace QuanLySV.Migrations
 {
     [DbContext(typeof(DataDbContext))]
     partial class DataDbContextModelSnapshot : ModelSnapshot
@@ -22,49 +22,28 @@ namespace App.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("App.Areas.HoSoHS.Models.HoSoHS", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("HocSinhId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("LopHocId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<float?>("DiemTongKet")
-                        .HasColumnType("real");
-
-                    b.Property<DateTime>("NgayNhapHoc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Slug")
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
-
-                    b.HasKey("Id", "HocSinhId", "LopHocId");
-
-                    b.HasIndex("HocSinhId");
-
-                    b.HasIndex("LopHocId");
-
-                    b.HasIndex("Slug")
-                        .IsUnique()
-                        .HasFilter("[Slug] IS NOT NULL");
-
-                    b.ToTable("HoSoHS");
-                });
-
-            modelBuilder.Entity("App.Areas.HoSoHS.Models.LopHoc", b =>
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.HocSinh", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Slug")
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)");
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("HomeAdress")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<Guid>("LopHocId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("SDT")
+                        .HasColumnType("int");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -73,9 +52,23 @@ namespace App.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Slug")
-                        .IsUnique()
-                        .HasFilter("[Slug] IS NOT NULL");
+                    b.HasIndex("LopHocId");
+
+                    b.ToTable("HocSinhs");
+                });
+
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("LopHocs");
                 });
@@ -101,10 +94,6 @@ namespace App.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Gender")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("HomeAdress")
                         .HasMaxLength(400)
@@ -132,9 +121,6 @@ namespace App.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("SDT")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -292,21 +278,13 @@ namespace App.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("App.Areas.HoSoHS.Models.HoSoHS", b =>
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.HocSinh", b =>
                 {
-                    b.HasOne("App.Models.AppUser", "HocSinh")
-                        .WithMany("HoSoHS")
-                        .HasForeignKey("HocSinhId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("App.Areas.HoSoHS.Models.LopHoc", "LopHoc")
-                        .WithMany("HoSoHS")
+                    b.HasOne("App.Areas.HSHocSinh.Models.LopHoc", "LopHoc")
+                        .WithMany("hocSinhs")
                         .HasForeignKey("LopHocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("HocSinh");
 
                     b.Navigation("LopHoc");
                 });
@@ -362,14 +340,9 @@ namespace App.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("App.Areas.HoSoHS.Models.LopHoc", b =>
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
                 {
-                    b.Navigation("HoSoHS");
-                });
-
-            modelBuilder.Entity("App.Models.AppUser", b =>
-                {
-                    b.Navigation("HoSoHS");
+                    b.Navigation("hocSinhs");
                 });
 #pragma warning restore 612, 618
         }

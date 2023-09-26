@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace App.Migrations
+namespace QuanLySV.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    [Migration("20230903083930_init")]
-    partial class init
+    [Migration("20230926072452_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,57 @@ namespace App.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.HocSinh", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("HomeAdress")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<Guid>("LopHocId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("SDT")
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LopHocId");
+
+                    b.ToTable("HocSinhs");
+                });
+
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LopHocs");
+                });
 
             modelBuilder.Entity("App.Models.AppUser", b =>
                 {
@@ -230,6 +281,17 @@ namespace App.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.HocSinh", b =>
+                {
+                    b.HasOne("App.Areas.HSHocSinh.Models.LopHoc", "LopHoc")
+                        .WithMany("hocSinhs")
+                        .HasForeignKey("LopHocId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LopHoc");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -279,6 +341,11 @@ namespace App.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
+                {
+                    b.Navigation("hocSinhs");
                 });
 #pragma warning restore 612, 618
         }

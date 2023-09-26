@@ -53,27 +53,20 @@ namespace App.Menu
                 Type = SideBarItemType.NavItem,
                 Title = "Quản lý Hồ Sơ",
                 AwesomeIcon = "fas fa-file-archive",
-                collapseID = "HoSoHS",
+                collapseID = "HSHocSinh",
                 Items = new List<SideBarItem>() {
                     new SideBarItem() { 
                         Type = SideBarItemType.NavItem,
                         Controller = "LopHoc",
                         Action = "Index", 
-                        Area = "HoSoHS",
+                        Area = "HSHocSinh",
                         Title = "Các Lớp Học"                        
                     },
                     new SideBarItem() { 
                         Type = SideBarItemType.NavItem,
-                        Controller = "HocSinh",
-                        Action = "Index", 
-                        Area = "HoSoHS",
-                        Title = "Các Học Sinh"                        
-                    }, 
-                    new SideBarItem() { 
-                        Type = SideBarItemType.NavItem,
                         Controller = "HoSoHS",
                         Action = "Index", 
-                        Area = "HoSoHS",
+                        Area = "HSHocSinh",
                         Title = "Các Hồ Sơ"                        
                     },                                                            
                 }
