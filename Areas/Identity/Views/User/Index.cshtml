@@ -6,7 +6,7 @@
 <partial name="_StatusMessage"></partial>
 <p>Tổng số thành viên: @Model.totalUsers</p>
 <div class="mb-2">
-    <a class="btn btn-secondary" asp-action="Register" asp-controller="ManageUser">Tạo User mới</a>
+    <a class="btn btn-sm btn-secondary" asp-action="Register" asp-controller="ManageUser">Tạo User mới</a>
 </div>
 
 <table class="table">
@@ -30,7 +30,7 @@
                 }
             </td>
             <td>
-                <a class="btn btn-success btn-sm" asp-action="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
+                <a class="btn btn-sm btn-success btn-sm" asp-action="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
             </td>
         </tr>
     }

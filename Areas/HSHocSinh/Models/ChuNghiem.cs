@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace App.Areas.HSHocSinh.Models
 {
-    public class HocSinh 
+    public class ChuNghiem
     {
         [Key]
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Phải nhập {0}")]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
-        [Display(Name = "Tên học sinh")]
+        [Display(Name = "tên giáo viên")]
         public string name { get; set; }
         
         [Required(ErrorMessage = "Phải nhập {0}")]
@@ -34,14 +34,6 @@ namespace App.Areas.HSHocSinh.Models
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
         [Display(Name = "Giới Tính")]
         public string? Gender { get; set; }
-
-
-        [Required(ErrorMessage = "Phải nhập {0}")]
-        public Guid LopHocId {set; get;}
-        [ForeignKey("LopHocId")]
-        [Display(Name = "Lớp Học")]
-        public LopHoc? LopHoc {set; get;}
-
-
+        public ICollection<LopHoc>?  LopHocs { get; set; }
     }
 }

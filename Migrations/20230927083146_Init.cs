@@ -12,15 +12,19 @@ namespace QuanLySV.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LopHocs",
+                name: "ChuNghiems",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    HomeAdress = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SDT = table.Column<int>(type: "int", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LopHocs", x => x.Id);
+                    table.PrimaryKey("PK_ChuNghiems", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,24 +69,20 @@ namespace QuanLySV.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HocSinhs",
+                name: "LopHocs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    HomeAdress = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SDT = table.Column<int>(type: "int", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LopHocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ChuNghiemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HocSinhs", x => x.Id);
+                    table.PrimaryKey("PK_LopHocs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_HocSinhs_LopHocs_LopHocId",
-                        column: x => x.LopHocId,
-                        principalTable: "LopHocs",
+                        name: "FK_LopHocs_ChuNghiems_ChuNghiemId",
+                        column: x => x.ChuNghiemId,
+                        principalTable: "ChuNghiems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -193,10 +193,38 @@ namespace QuanLySV.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "HocSinhs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    HomeAdress = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SDT = table.Column<int>(type: "int", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LopHocId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HocSinhs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HocSinhs_LopHocs_LopHocId",
+                        column: x => x.LopHocId,
+                        principalTable: "LopHocs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_HocSinhs_LopHocId",
                 table: "HocSinhs",
                 column: "LopHocId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LopHocs_ChuNghiemId",
+                table: "LopHocs",
+                column: "ChuNghiemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -267,6 +295,9 @@ namespace QuanLySV.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "ChuNghiems");
         }
     }
 }

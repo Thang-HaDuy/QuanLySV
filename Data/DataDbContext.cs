@@ -37,6 +37,7 @@ namespace App.Data
 
         public DbSet<HocSinh> HocSinhs { get; set; }
         public DbSet<LopHoc> LopHocs { get; set; }
+        public DbSet<ChuNghiem> ChuNghiems { get; set; }
 
     }
 }

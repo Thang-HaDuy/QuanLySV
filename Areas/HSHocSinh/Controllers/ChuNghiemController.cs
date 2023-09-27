@@ -15,29 +15,29 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
     [Authorize]
     [Area("HSHocSinh")]
     [Route("/[controller]/[action]/{id?}")]
-    public class LopHocController : Controller
+    public class ChuNghiemController : Controller
     {
         private readonly DataDbContext _context;
 
-        public LopHocController(DataDbContext context)
+        public ChuNghiemController(DataDbContext context)
         {
             _context = context;
         }
 
         [TempData]
         public string StatusMessage { get; set; }
-
-        // GET: HSHocSinh/LopHoc
+        // GET: HSHocSinh/ChuNghiem
         public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
         {
-            var lopHoc = _context.LopHocs
-                        .Include(l => l.ChuNghiem)
-                        .Include(l => l.hocSinhs)
-                        .OrderBy(l => l.name);
+            //   return _context.ChuNghiem != null ? 
+            //               View(await _context.ChuNghiem.ToListAsync()) :
+            //               Problem("Entity set 'DataDbContext.ChuNghiem'  is null.");
+            var chuNghiem = _context.ChuNghiems
+                        .OrderBy(h => h.name);
 
-            int totalLopHoc = await lopHoc.CountAsync();  
-            if (pagesize <=0) pagesize = 5;
-            int countPages = (int)Math.Ceiling((double)totalLopHoc / pagesize);
+            int totalChuNghiem = await chuNghiem.CountAsync();  
+            if (pagesize <= 0) pagesize = 5;
+            int countPages = (int)Math.Ceiling((double)totalChuNghiem / pagesize);
  
  
             if (currentPage > countPages) currentPage = countPages;     
@@ -54,145 +54,144 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
             };
 
             ViewBag.pagingModel = pagingModel;
-            ViewBag.totalLopHoc = totalLopHoc;
+            ViewBag.totalChuNghiem = totalChuNghiem;
 
-            ViewBag.lopHocIndex = (currentPage - 1) * pagesize;
+            ViewBag.ChuNghiemIndex = (currentPage - 1) * pagesize;
 
-            var lopHocInPage = await lopHoc.Skip((currentPage - 1) * pagesize)
+            var chuNghiemInPage = await chuNghiem.Skip((currentPage - 1) * pagesize)
+                             .Include(h => h.LopHocs)
                              .Take(pagesize)
                              .ToListAsync();   
                         
-            return View(lopHocInPage);
+            return View(chuNghiemInPage);
         }
 
-        // GET: HSHocSinh/LopHoc/Details/5
+        // GET: HSHocSinh/ChuNghiem/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || _context.LopHocs == null)
+            if (id == null || _context.ChuNghiems == null)
             {
                 return NotFound();
             }
 
-            var lopHoc = await _context.LopHocs
-                .Include(l => l.hocSinhs)
-                .Include(l => l.ChuNghiem)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (lopHoc == null)
+            var chuNghiem = await _context.ChuNghiems
+                            .Include(c => c.LopHocs)
+                            .FirstOrDefaultAsync(m => m.Id == id);
+            if (chuNghiem == null)
             {
                 return NotFound();
             }
 
-            return View(lopHoc);
+            return View(chuNghiem);
         }
 
-        // GET: HSHocSinh/LopHoc/Create
+        // GET: HSHocSinh/ChuNghiem/Create
         public IActionResult Create()
         {
-            ViewData["ChuNghiemId"] = new SelectList(_context.ChuNghiems, "Id", "Gender");
             return View();
         }
 
-        // POST: HSHocSinh/LopHoc/Create
+        // POST: HSHocSinh/ChuNghiem/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("name,ChuNghiemId")] LopHoc lopHoc)
+        public async Task<IActionResult> Create([Bind("name,HomeAdress,BirthDate,SDT,Gender")] ChuNghiem chuNghiem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(lopHoc);
+                _context.Add(chuNghiem);
                 await _context.SaveChangesAsync();
-                StatusMessage = "Vừa tạo Lớp Học mới";
+                StatusMessage = "Vừa thêm một Giáo Viên mới";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ChuNghiemId"] = new SelectList(_context.ChuNghiems, "Id", "Gender", lopHoc.ChuNghiemId);
-            return View(lopHoc);
+            return View(chuNghiem);
         }
 
-        // GET: HSHocSinh/LopHoc/Edit/5
+        // GET: HSHocSinh/ChuNghiem/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null || _context.LopHocs == null)
+            if (id == null || _context.ChuNghiems == null)
             {
                 return NotFound();
             }
 
-            var lopHoc = await _context.LopHocs.FindAsync(id);
-            if (lopHoc == null)
+            var chuNghiem = await _context.ChuNghiems.FindAsync(id);
+            if (chuNghiem == null)
             {
                 return NotFound();
             }
-            ViewData["ChuNghiemId"] = new SelectList(_context.ChuNghiems, "Id", "Gender", lopHoc.ChuNghiemId);
-            return View(lopHoc);
+            return View(chuNghiem);
         }
 
-        // POST: HSHocSinh/LopHoc/Edit/5
+        // POST: HSHocSinh/ChuNghiem/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,name,ChuNghiemId")] LopHoc lopHoc)
+        public async Task<IActionResult> Edit(Guid id, [Bind("name,HomeAdress,BirthDate,SDT,Gender")] ChuNghiem chuNghiem)
         {
+            
             if (ModelState.IsValid)
             {
-                var lopH = await _context.LopHocs.FindAsync(id);
-                if (lopH != null)
+                var user = await _context.ChuNghiems.FindAsync(id);
+                if (user != null)
                 {
-                    lopH.name = lopHoc.name;
-                    lopH.ChuNghiemId = lopHoc.ChuNghiemId;
-                    _context.Update(lopH);
+                    user.name = chuNghiem.name;
+                    user.HomeAdress = chuNghiem.HomeAdress;
+                    user.BirthDate = chuNghiem.BirthDate;
+                    user.SDT = chuNghiem.SDT;
+                    user.Gender = chuNghiem.Gender;
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
-                    StatusMessage = "Vừa sửa Lớp Học";
                     return RedirectToAction(nameof(Index));
                 }
-                return View(lopHoc);
+                return View(chuNghiem);
             }
-            ViewData["ChuNghiemId"] = new SelectList(_context.ChuNghiems, "Id", "Gender", lopHoc.ChuNghiemId);
-            return View(lopHoc);
+            return View(chuNghiem);
         }
 
-        // GET: HSHocSinh/LopHoc/Delete/5
+        // GET: HSHocSinh/ChuNghiem/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null || _context.LopHocs == null)
+            if (id == null || _context.ChuNghiems == null)
             {
                 return NotFound();
             }
 
-            var lopHoc = await _context.LopHocs
+            var chuNghiem = await _context.ChuNghiems
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (lopHoc == null)
+            if (chuNghiem == null)
             {
                 return NotFound();
             }
 
-            return View(lopHoc);
+            return View(chuNghiem);
         }
 
-        // POST: HSHocSinh/LopHoc/Delete/5
+        // POST: HSHocSinh/ChuNghiem/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (_context.LopHocs == null)
+            if (_context.ChuNghiems == null)
             {
-                return Problem("Entity set 'DataDbContext.LopHocs'  is null.");
+                return Problem("Entity set 'DataDbContext.ChuNghiem'  is null.");
             }
-            var lopHoc = await _context.LopHocs.FindAsync(id);
-            if (lopHoc != null)
+            var chuNghiem = await _context.ChuNghiems.FindAsync(id);
+            if (chuNghiem != null)
             {
-                StatusMessage = "Vừa xóa một lớp Học";
-                _context.LopHocs.Remove(lopHoc);
+                _context.ChuNghiems.Remove(chuNghiem);
             }
             
             await _context.SaveChangesAsync();
+            StatusMessage = "Vừa xóa một Giáo Viên";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool LopHocExists(Guid id)
+        private bool ChuNghiemExists(Guid id)
         {
-          return (_context.LopHocs?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.ChuNghiems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

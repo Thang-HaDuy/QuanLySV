@@ -1,14 +1,13 @@
-@model IEnumerable<App.Areas.HSHocSinh.Models.LopHoc>
+@model IEnumerable<App.Areas.HSHocSinh.Models.ChuNghiem>
 
 @{
-    ViewData["Title"] = "Danh Sách Lớp Học";
+    ViewData["Title"] = "Danh Sách Giáo Viên";
 }
 
-<partial name="_StatusMessage" />
 <p>
     <a class="btn btn-sm btn-primary" asp-action="Create">Create New</a>
 </p>
-<p>Tổng số lớp học: @ViewBag.totalLopHoc</p>
+<p>Tổng số Giáo Viên: @ViewBag.totalChuNghiem</p>
 <table class="table">
     <thead>
         <tr>
@@ -17,7 +16,10 @@
                 @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChuNghiem)
+                @Html.DisplayNameFor(model => model.SDT)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th></th>
         </tr>
@@ -26,7 +28,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @(++ViewBag.lopHocIndex)
+                @(++ViewBag.ChuNghiemIndex)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">
@@ -34,7 +36,10 @@
                 </a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChuNghiem.Gender)
+                @Html.DisplayFor(modelItem => item.SDT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
                 <a class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -42,12 +47,13 @@
             </td>
         </tr>
 }
+
     </tbody>
 </table>
-
 <partial name="_PagingXTL" model="@ViewBag.pagingModel" />
+
 @{
-    _AdminSidebarService.SetActive("LopHoc", "Index", "HSHocSinh");
+    _AdminSidebarService.SetActive("ChuNghiem", "Index", "HSHocSinh");
 }
 @section Sidebar
 {

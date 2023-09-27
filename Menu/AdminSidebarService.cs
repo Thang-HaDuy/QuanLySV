@@ -68,7 +68,14 @@ namespace App.Menu
                         Action = "Index", 
                         Area = "HSHocSinh",
                         Title = "Các Hoc Sinh"                        
-                    },                                                            
+                    },  
+                    new SideBarItem() { 
+                        Type = SideBarItemType.NavItem,
+                        Controller = "ChuNghiem",
+                        Action = "Index", 
+                        Area = "HSHocSinh",
+                        Title = "Các Giáo Viên"                        
+                    },                                                           
                 }
 
             });

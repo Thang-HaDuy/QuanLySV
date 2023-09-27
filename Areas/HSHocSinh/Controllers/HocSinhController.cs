@@ -100,7 +100,7 @@ namespace App.Areas.HSHocSinh.Controllers
             {
                 _context.Add(hocSinh);
                 await _context.SaveChangesAsync();
-                StatusMessage = "Vừa tạo Lớp Học mới";
+                StatusMessage = "Vừa thêm một Học sinh mới";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LopHocId"] = new SelectList(_context.LopHocs, "Id", "name", hocSinh.LopHocId);
@@ -185,9 +185,10 @@ namespace App.Areas.HSHocSinh.Controllers
             if (hocSinh != null)
             {
                 _context.HocSinhs.Remove(hocSinh);
+                await _context.SaveChangesAsync();
+                StatusMessage = "Vừa xóa một Học sinh";
             }
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,10 +1,9 @@
-@model App.Areas.HSHocSinh.Models.HocSinh
+@model App.Areas.HSHocSinh.Models.ChuNghiem
 
 @{
-    ViewData["Title"] = "Thêm Học Sinh";
+    ViewData["Title"] = "Thêm Giáo Viên";
 }
 
-<partial name="_StatusMessage" />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -35,10 +34,6 @@
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LopHocId" class="control-label"></label>
-                <select asp-for="LopHocId" class ="form-control" asp-items="ViewBag.LopHocId"></select>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -54,7 +49,7 @@
 }
 
 @{
-    _AdminSidebarService.SetActive("HocSinh", "Index", "HSHocSinh");
+    _AdminSidebarService.SetActive("ChuNghiem", "Index", "HSHocSinh");
 }
 @section Sidebar
 {

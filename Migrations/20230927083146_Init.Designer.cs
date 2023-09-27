@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace QuanLySV.Migrations
 {
     [DbContext(typeof(DataDbContext))]
-    [Migration("20230926072452_Init")]
+    [Migration("20230927083146_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,6 +25,40 @@ namespace QuanLySV.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.ChuNghiem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("HomeAdress")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar");
+
+                    b.Property<int?>("SDT")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChuNghiems");
+                });
+
             modelBuilder.Entity("App.Areas.HSHocSinh.Models.HocSinh", b =>
                 {
                     b.Property<Guid>("Id")
@@ -32,13 +66,16 @@ namespace QuanLySV.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("BirthDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Gender")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("HomeAdress")
+                        .IsRequired()
                         .HasMaxLength(400)
                         .HasColumnType("nvarchar");
 
@@ -46,6 +83,7 @@ namespace QuanLySV.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("SDT")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("name")
@@ -66,12 +104,17 @@ namespace QuanLySV.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ChuNghiemId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChuNghiemId");
 
                     b.ToTable("LopHocs");
                 });
@@ -292,6 +335,17 @@ namespace QuanLySV.Migrations
                     b.Navigation("LopHoc");
                 });
 
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
+                {
+                    b.HasOne("App.Areas.HSHocSinh.Models.ChuNghiem", "ChuNghiem")
+                        .WithMany("LopHocs")
+                        .HasForeignKey("ChuNghiemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChuNghiem");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -341,6 +395,11 @@ namespace QuanLySV.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("App.Areas.HSHocSinh.Models.ChuNghiem", b =>
+                {
+                    b.Navigation("LopHocs");
                 });
 
             modelBuilder.Entity("App.Areas.HSHocSinh.Models.LopHoc", b =>
