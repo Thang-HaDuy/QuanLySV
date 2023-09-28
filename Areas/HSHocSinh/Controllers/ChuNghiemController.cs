@@ -27,13 +27,16 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
         [TempData]
         public string StatusMessage { get; set; }
         // GET: HSHocSinh/ChuNghiem
-        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
+        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize, [FromQuery(Name = "key")]string keyword)
         {
-            //   return _context.ChuNghiem != null ? 
-            //               View(await _context.ChuNghiem.ToListAsync()) :
-            //               Problem("Entity set 'DataDbContext.ChuNghiem'  is null.");
             var chuNghiem = _context.ChuNghiems
                         .OrderBy(h => h.name);
+
+            if (keyword != null) {
+                chuNghiem = _context.ChuNghiems
+                        .Where(h => h.name.Contains(keyword))
+                        .OrderBy(h => h.name);
+            }
 
             int totalChuNghiem = await chuNghiem.CountAsync();  
             if (pagesize <= 0) pagesize = 5;
@@ -48,11 +51,21 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
                 countpages = countPages,
                 currentpage = currentPage,
                 generateUrl = (pageNumber) => Url.Action("Index", new {
+                    key = keyword,
                     p =  pageNumber,
                     size = pagesize
                 })
             };
 
+            var searchModel = new SearchModel()
+            {
+                action = "Index",
+                Controller = "ChuNghiem",
+                name = "key",
+                value = keyword
+            };
+
+            ViewBag.searchModel = searchModel;
             ViewBag.pagingModel = pagingModel;
             ViewBag.totalChuNghiem = totalChuNghiem;
 

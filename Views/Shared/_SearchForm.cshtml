@@ -1,0 +1,22 @@
+@model App.Models.SearchModel
+@{
+    string action = Model.action;
+    string Controller = Model.Controller;
+    string name = Model.name;
+    string value = Model.value;
+}
+
+<div class="mr-auto">
+    @using (Html.BeginForm(action, Controller, FormMethod.Get))
+    {
+        <div class="input-group">
+            <input type="text" name="@name" value="@value" class="form-control bg-white border-0 small" placeholder="Search for..."
+                aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search fa-sm"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>

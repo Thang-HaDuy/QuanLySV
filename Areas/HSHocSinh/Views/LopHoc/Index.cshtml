@@ -8,7 +8,10 @@
 <p>
     <a class="btn btn-sm btn-primary" asp-action="Create">Create New</a>
 </p>
-<p>Tổng số lớp học: @ViewBag.totalLopHoc</p>
+<div class="d-flex pb-2">
+    <partial name="_SearchForm" model="@ViewBag.searchModel"/>
+    <p>Tổng số lớp học: @ViewBag.totalLopHoc</p>
+</div>
 <table class="table">
     <thead>
         <tr>

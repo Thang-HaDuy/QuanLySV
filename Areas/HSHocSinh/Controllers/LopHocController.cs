@@ -28,12 +28,20 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
         public string StatusMessage { get; set; }
 
         // GET: HSHocSinh/LopHoc
-        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
+        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize, [FromQuery(Name = "key")]string keyword)
         {
             var lopHoc = _context.LopHocs
                         .Include(l => l.ChuNghiem)
                         .Include(l => l.hocSinhs)
                         .OrderBy(l => l.name);
+
+            if (keyword != null) {
+                lopHoc = _context.LopHocs
+                        .Include(l => l.ChuNghiem)
+                        .Include(l => l.hocSinhs)
+                        .Where(h => h.name.Contains(keyword))
+                        .OrderBy(l => l.name);
+            }           
 
             int totalLopHoc = await lopHoc.CountAsync();  
             if (pagesize <=0) pagesize = 5;
@@ -48,11 +56,21 @@ namespace QuanLySV.Areas.HSHocSinh.Controllers
                 countpages = countPages,
                 currentpage = currentPage,
                 generateUrl = (pageNumber) => Url.Action("Index", new {
+                    key = keyword,
                     p =  pageNumber,
                     size = pagesize
                 })
             };
 
+            var searchModel = new SearchModel()
+            {
+                action = "Index",
+                Controller = "LopHoc",
+                name = "key",
+                value = keyword
+            };
+
+            ViewBag.searchModel = searchModel;
             ViewBag.pagingModel = pagingModel;
             ViewBag.totalLopHoc = totalLopHoc;
 

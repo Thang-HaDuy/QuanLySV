@@ -27,10 +27,16 @@ namespace App.Areas.HSHocSinh.Controllers
         [TempData]
         public string StatusMessage { get; set; }
         // GET: HSHocSinh/HocSinh
-        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize)
+        public async Task<IActionResult> Index([FromQuery(Name = "p")]int currentPage, [FromQuery(Name = "size")]int pagesize, [FromQuery(Name = "key")]string keyword)
         {
             var hocSinh = _context.HocSinhs
                         .OrderBy(h => h.name);
+
+            if (keyword != null) {
+                hocSinh = _context.HocSinhs
+                        .Where(h => h.name.Contains(keyword))
+                        .OrderBy(h => h.name);
+            }
 
             int totalHocSinh = await hocSinh.CountAsync();  
             if (pagesize <= 0) pagesize = 5;
@@ -45,11 +51,21 @@ namespace App.Areas.HSHocSinh.Controllers
                 countpages = countPages,
                 currentpage = currentPage,
                 generateUrl = (pageNumber) => Url.Action("Index", new {
+                    key = keyword,
                     p =  pageNumber,
                     size = pagesize
                 })
             };
 
+            var searchModel = new SearchModel()
+            {
+                action = "Index",
+                Controller = "HocSinh",
+                name = "key",
+                value = keyword
+            };
+
+            ViewBag.searchModel = searchModel;
             ViewBag.pagingModel = pagingModel;
             ViewBag.totalHocSinh = totalHocSinh;
 
